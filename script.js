@@ -3,14 +3,29 @@ let cells = document.querySelectorAll('.cell');
 let heading = document.querySelector('.status');
 let btn = document.querySelector('.restart-btn');
 
+let xScoreDisplay = document.querySelector('#x-score');
+let oScoreDisplay = document.querySelector('#o-score');
+
 let arr = ['', '', '', '', '', '', '', '', ''];
 let player = 'X';
 let gameOver = false;
 
+let xScore = 0;
+let oScore = 0;
+
+let winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+];
 
 // Cell click logic
 cells.forEach((cell, index) => {
-
     cell.addEventListener('click', () => {
 
         // If cell is already filled or game is over
@@ -22,30 +37,38 @@ cells.forEach((cell, index) => {
         arr[index] = player;
         cell.innerHTML = player;
 
+        cell.classList.add(player.toLowerCase());
 
-        // Check winner
-        if (winner()) {
+        let winnigCells = winner();
+        if (winnigCells) {
+
+            winnigCells.forEach(index => {
+                cells[index].classList.add('winner');
+            })
+            if(player == 'X') {
+                xScore++;
+                xScoreDisplay.innerHTML = xScore;
+            } else {
+                oScore++;
+                oScoreDisplay.innerHTML = oScore;
+            }
+
             heading.innerHTML = player + " Wins! Reset and Restart";
             gameOver = true;
             return;
         }
-
-
         // Check draw
         if (!arr.includes('')) {
             heading.innerHTML = "Game Tied! Reset and Restart";
             gameOver = true;
             return;
         }
-
-
         // Change player
         player = player == 'X' ? 'O' : 'X';
 
-        heading.innerHTML = "Player " + player + " Turn";
+        updateTurnDisplay();
     });
 });
-
 
 // Reset button logic
 btn.addEventListener('click', () => {
@@ -57,85 +80,33 @@ btn.addEventListener('click', () => {
 
     for (let i = 0; i < 9; i++) {
         cells[i].innerHTML = '';
+        cells[i].classList.remove('winner', 'x', 'o');
     }
 
-    heading.innerHTML = "Player X Turn";
+    updateTurnDisplay();
 });
 
 
 // Winning condition
 function winner() {
 
-    // Horizontal
-    if (
-        arr[0] != '' &&
-        arr[0] == arr[1] &&
-        arr[1] == arr[2]
-    ) {
-        return true;
+    for(let combination of winningCombinations) {
+        let[a, b, c] = combination;
+
+        if (
+            arr[a] != '' &&
+            arr[a] == arr[b] &&
+            arr[b] == arr[c]
+        ) {
+            return combination;
+        }
     }
+    return null;
+}
 
-    if (
-        arr[3] != '' &&
-        arr[3] == arr[4] &&
-        arr[4] == arr[5]
-    ) {
-        return true;
-    }
+function updateTurnDisplay() {
+    heading.innerHTML = "Player " + player + " Turn";
 
-    if (
-        arr[6] != '' &&
-        arr[6] == arr[7] &&
-        arr[7] == arr[8]
-    ) {
-        return true;
-    }
-
-
-    // Vertical
-    if (
-        arr[0] != '' &&
-        arr[0] == arr[3] &&
-        arr[3] == arr[6]
-    ) {
-        return true;
-    }
-
-    if (
-        arr[1] != '' &&
-        arr[1] == arr[4] &&
-        arr[4] == arr[7]
-    ) {
-        return true;
-    }
-
-    if (
-        arr[2] != '' &&
-        arr[2] == arr[5] &&
-        arr[5] == arr[8]
-    ) {
-        return true;
-    }
-
-
-    // Diagonal
-    if (
-        arr[0] != '' &&
-        arr[0] == arr[4] &&
-        arr[4] == arr[8]
-    ) {
-        return true;
-    }
-
-    if (
-        arr[2] != '' &&
-        arr[2] == arr[4] &&
-        arr[4] == arr[6]
-    ) {
-        return true;
-    }
-
-
-    // No winner
-    return false;
+    heading.classList.remove('x-turn', 'o-turn');
+    heading.classList.add(player.toLowerCase() + '-turn');
 }

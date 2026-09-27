@@ -24,6 +24,27 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.player-score {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.player-score span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.player-score strong {
+    font-size: 28px;
+}
+
 h1 {
     font-size: 40px;
     margin-bottom: 10px;
@@ -34,6 +55,16 @@ h1 {
     font-size: 18px;
     margin-bottom: 25px;
     color: #16213e;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.status.x-turn {
+    color: #00d9ff;
+}
+
+.status.o-turn {
+    color: #ff4f81;
 }
 
 .board {
@@ -66,6 +97,18 @@ h1 {
 .cell:hover {
     background: #1b4f85;
     transform: scale(1.03);
+}
+
+.cell.winner {
+    background: #0daa2f;
+    transform: scale(1.05);
+}
+
+.cell.x {
+    color: #00d9ff;
+}
+.cell.o {
+    color: #ff4f81;
 }
 
 .restart-btn {
